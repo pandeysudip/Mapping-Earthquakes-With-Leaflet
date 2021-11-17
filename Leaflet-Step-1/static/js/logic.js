@@ -14,28 +14,45 @@ function createFeatures(earthquakeData) {
     function onEachFeature(feature, layer) {
         layer.bindPopup(`<h3>${feature.properties.place}</h3><hr><p>${new Date(feature.properties.time)}</p>`);
     }
-    function chooseColor(mag) {
-        if (mag > 8) return "red";
-        else if (mag > 6) return "orange";
-        else if (mag > 5) return "yellow";
-        else if (mag > 4) return "black";
-        else if (mag > 3) return "purple";
-        else return "green";
+    function chooseColor(depth) {
+        if (depth >= 500) return "red";
+        else if (depth >= 100) return "purple";
+        else if (depth >= 50) return "yellow";
+        else if (depth >= 20) return "black";
+        else if (depth >= 10) return "green";
+        else if (depth >= 5) return "blue";
+        else return "white";
     }
+
+    function chooseSize(mag) {
+        if (mag > 8) return 25;
+        else if (mag > 6) return 18;
+        else if (mag > 5) return 15;
+        else if (mag > 4) return 8;
+        else if (mag > 3) return 5;
+        else return 4;
+    }
+
 
     // Create a GeoJSON layer that contains the features array on the earthquakeData object.
     // Run the onEachFeature function once for each piece of data in the array.
     var earthquakes = L.geoJSON(earthquakeData, {
+        pointToLayer: function (feature, latlng) {
+            return L.circleMarker(latlng, {
+                color: "#000",
+                weight: 1,
+                opacity: 1,
+                fillOpacity: 0.8
+            });
+        },
         style: function (feature) {
             return {
-                color: "white",
-                fillColor: chooseColor(feature.properties.mag)
+                fillColor: chooseColor(feature.geometry.coordinates[2]),
+                radius: chooseSize(feature.properties.mag)
             };
         },
         onEachFeature: onEachFeature,
-
     });
-
     // Send our earthquakes layer to the createMap function/
     createMap(earthquakes);
 }
