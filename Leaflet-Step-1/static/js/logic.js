@@ -8,7 +8,6 @@ d3.json(queryUrl).then(function (data) {
 });
 
 function createFeatures(earthquakeData) {
-
     // Define a function that we want to run once for each feature in the features array.
     // Give each feature a popup that describes the place and time of the earthquake.
     function onEachFeature(feature, layer) {
@@ -17,13 +16,12 @@ function createFeatures(earthquakeData) {
     function chooseColor(depth) {
         if (depth >= 500) return "red";
         else if (depth >= 100) return "purple";
-        else if (depth >= 50) return "yellow";
+        else if (depth >= 50) return "green";
         else if (depth >= 20) return "black";
-        else if (depth >= 10) return "green";
+        else if (depth >= 10) return "yellow";
         else if (depth >= 5) return "blue";
         else return "white";
     }
-
     function chooseSize(mag) {
         if (mag > 8) return 25;
         else if (mag > 6) return 18;
@@ -32,8 +30,6 @@ function createFeatures(earthquakeData) {
         else if (mag > 3) return 5;
         else return 4;
     }
-
-
     // Create a GeoJSON layer that contains the features array on the earthquakeData object.
     // Run the onEachFeature function once for each piece of data in the array.
     var earthquakes = L.geoJSON(earthquakeData, {
@@ -91,7 +87,6 @@ function createMap(earthquakes) {
         subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
     });
 
-
     // Create a baseMaps object to hold the streetmap layer.
     var baseMaps = {
         "Street Map": streetmap,
@@ -114,6 +109,8 @@ function createMap(earthquakes) {
         zoom: 2,
         layers: [googleStreets, earthquakes]
     });
+    colors = ['red', 'purple', 'green', 'black', 'yellow', 'white']
+    //myMap.addColorbar(colors = colors);
 
     // Create a layer control.
     // Pass it our baseMaps and overlayMaps.
@@ -121,5 +118,4 @@ function createMap(earthquakes) {
     L.control.layers(baseMaps, overlayMaps, {
         collapsed: false
     }).addTo(myMap);
-
 }
