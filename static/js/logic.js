@@ -13,29 +13,31 @@ function createFeatures(earthquakeData) {
     function onEachFeature(feature, layer) {
         layer.bindPopup(`<h3>${feature.properties.place}</h3><hr><p>${new Date(feature.properties.time)}</p>`);
     }
-    function chooseColor(depth) {
-        if (depth >= 500) return "red";
-        else if (depth >= 100) return "purple";
-        else if (depth >= 50) return "green";
-        else if (depth >= 20) return "black";
-        else if (depth >= 10) return "yellow";
-        else if (depth >= 5) return "blue";
-        else return "white";
+
+    function getColor(d) {
+        return d > 500 ? '#7a0177' :
+            d > 100 ? '#BD0026' :
+                d > 50 ? '#E31A1C' :
+                    d > 20 ? '#FC4E2A' :
+                        d > 10 ? '#FD8D3C' :
+                            d > 5 ? '#FEB24C' :
+                                '#FFEDA0';
     }
+
     function chooseSize(mag) {
         if (mag > 8) return 25;
         else if (mag > 6) return 18;
         else if (mag > 5) return 15;
         else if (mag > 4) return 8;
         else if (mag > 3) return 5;
-        else return 4;
+        else if (mag > 2) return 4;
+        else return 2;
     }
     // Create a GeoJSON layer that contains the features array on the earthquakeData object.
     // Run the onEachFeature function once for each piece of data in the array.
     var earthquakes = L.geoJSON(earthquakeData, {
         pointToLayer: function (feature, latlng) {
             return L.circleMarker(latlng, {
-                color: "#000",
                 weight: 1,
                 opacity: 1,
                 fillOpacity: 0.8
@@ -43,7 +45,7 @@ function createFeatures(earthquakeData) {
         },
         style: function (feature) {
             return {
-                fillColor: chooseColor(feature.geometry.coordinates[2]),
+                color: getColor(feature.geometry.coordinates[2]),
                 radius: chooseSize(feature.properties.mag)
             };
         },
@@ -107,15 +109,42 @@ function createMap(earthquakes) {
             37.09, -95.71
         ],
         zoom: 2,
-        layers: [googleStreets, earthquakes]
+        layers: [googleSat, earthquakes]
     });
-    colors = ['red', 'purple', 'green', 'black', 'yellow', 'white']
-    //myMap.addColorbar(colors = colors);
 
-    // Create a layer control.
-    // Pass it our baseMaps and overlayMaps.
     // Add the layer control to the map.
     L.control.layers(baseMaps, overlayMaps, {
         collapsed: false
     }).addTo(myMap);
-}
+
+    var legend = L.control({ position: 'bottomright' });
+
+    // Then add all the details for the legend
+    legend.onAdd = function () {
+        var div = L.DomUtil.create("div", "info legend");
+
+        var grades = ["-10 - 5", "5 - 10", "10 - 20", "20 - 50", "50-100", "100 - 500", "500+"];
+        var colors = [
+            '#FFEDA0',
+            '#FEB24C',
+            '#FD8D3C',
+            '#FC4E2A',
+            '#E31A1C',
+            '#BD0026',
+            '#7a0177'
+        ];
+        var legendInfo = "<h2>Earthquake</h2>" +
+            "<div class=\"labels\">" + "</div>";
+        var allLabels = [];
+        for (var i = 0; i < grades.length; i++) {
+            allLabels.push('<li style\="background:' + colors[i] + '"\">' + grades[i] + '</li>');
+        }
+        div.innerHTML = legendInfo;
+        div.innerHTML += "<ul>" + allLabels.join("") + "</ul>";
+        return div;
+
+    };
+
+    // Finally, we our legend to the map.
+    legend.addTo(myMap);
+};
