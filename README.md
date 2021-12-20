@@ -5,7 +5,7 @@
 ![1-Logo](Images/1-Logo.png)
 
 
-I am building a new set of tools that will allow to visualize earthquake data obtained from United States Geological Survey, or USGS. This will help to better educate the public and other government organizations (and hopefully secure more funding) on issues facing our planet.
+Built a new set of tools that will allow to visualize earthquake data obtained from United States Geological Survey, or USGS. This will help to better educate the public and other government organizations on issues facing our planet.
 
 
 ### Level 1: Basic Visualization
