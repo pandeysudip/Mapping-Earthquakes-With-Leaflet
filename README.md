@@ -29,3 +29,6 @@ I am building a new set of tools that will allow to visualize earthquake data ob
    * Created a legend that will provide context for your map data.
 
 ![2-BasicMap](Images/2-BasicMap.png)
+
+The website is deployed to GitHub at:
+https://pandeysudip.github.io/leaflet-challenge/
